@@ -1,5 +1,6 @@
-import { CosmosClient, SqlParameter } from "@azure/cosmos";
+import { CosmosClient, ItemResponse, SqlParameter } from "@azure/cosmos";
 import { config as dotenv_config } from "dotenv"
+import { DB_NAME } from "../config"
 
 
 dotenv_config()
@@ -11,7 +12,6 @@ interface IQuery {
 
 const endpoint = process.env.END_POINT_URL
 const key = process.env.DB_KEY
-const DB_NAME = "onboarding"
 
 const client = new CosmosClient({ endpoint, key })
 
@@ -25,20 +25,42 @@ const create = async (nomeTabela: string, body: any): Promise<string> => {
 
 }
 
-const findAll = async (nomeTabela: string, { query, parameters }: IQuery): Promise<any> => {
-    const { container } = await client.database(DB_NAME).containers.createIfNotExists({ id: nomeTabela })
+const findAll = async (nomeTabela: string): Promise<any> => {
 
-    const { resources } = await container.items.query({ query, parameters }).fetchAll()
+    const sql = `select * from ${nomeTabela}`
+    const query: IQuery = {
+        query: sql,
+    }
+
+    const { container } = await client.database(DB_NAME).containers.createIfNotExists({ id: nomeTabela })
+    const { resources } = await container.items.query(query).fetchAll()
 
     return resources;
 }
 
-const deleteOne = async (nomeTabela: string, nome: string) => {
-    const { container } = await client.database(DB_NAME).containers.createIfNotExists({ id: nomeTabela })
-
-    // TODO: terminar exlucao de alunos
-    //const response = container.item()
-
+const findById = async (nomeTabela: string, id: string): Promise<ItemResponse<any>> => {
+    const item = await client.database(DB_NAME).container(nomeTabela).item(id).read()
+    return item
 }
 
-export { IQuery, create, findAll }
+const deleteAllItems = async (nomeTabela: string): Promise<any> => {
+    const container = await client.database(DB_NAME).container(nomeTabela)
+    await container.delete()
+}
+
+const findByName = async (nomeTabela: string, nome: string): Promise<any> => {
+    const sql = `select * from ${nomeTabela} t where t.nome=@nome`
+
+    const query: IQuery = {
+        query: sql,
+        parameters: [{
+            name: "@nome", value: nome
+        }]
+    }
+
+    const { resources: result } = await client.database(DB_NAME).container(nomeTabela).items.query(query).fetchAll()
+
+    return result
+}
+
+export { IQuery, create, findAll, findById, deleteAllItems, findByName }

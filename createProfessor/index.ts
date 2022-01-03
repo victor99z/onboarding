@@ -1,24 +1,24 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 import { create, IQuery } from "../shared/cosmos"
+import { TABELA_PROFESSORES } from "../shared/config"
+
 
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    const { nome, idade, matricula, formaIngresso } = req.body
+    const { nome, titulacao } = req.body;
 
-    const aluno: Aluno = {
+    const professor: Professor = {
         nome,
-        idade,
-        matricula,
-        formaIngresso
+        titulacao
     }
 
-    const insert = await create("alunos", aluno)
+    const idCriacao = await create(TABELA_PROFESSORES, professor)
 
     context.res = {
         body: {
-            id: insert
+            idCriacao
         }
-    }
+    };
 
 };
 

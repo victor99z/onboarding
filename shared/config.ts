@@ -1,0 +1,5 @@
+export const DB_NAME = "onboarding"
+export const TABELA_ALUNOS = "alunos"
+export const TABELA_PROFESSORES = "professores"
+export const TABELA_DISCIPLINAS = "disciplinas"
+export const TABELA_TURMAS = "turmas"

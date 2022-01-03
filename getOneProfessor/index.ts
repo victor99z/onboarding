@@ -1,10 +1,11 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
-import { findAll, IQuery } from "../shared/cosmos"
-import { TABELA_ALUNOS } from "../shared/config"
+import { TABELA_PROFESSORES } from "../shared/config";
+import { findByName } from "../shared/cosmos";
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
+    const { nome } = req.body
 
-    const response = await findAll(TABELA_ALUNOS)
+    const response = await findByName(TABELA_PROFESSORES, nome)
 
     context.res = {
         body: response

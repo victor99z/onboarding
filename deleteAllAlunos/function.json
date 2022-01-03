@@ -15,5 +15,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/deleteAluno/index.js"
+  "scriptFile": "../dist/deleteAllAlunos/index.js"
 }
