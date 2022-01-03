@@ -1,4 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import { TABELA_ALUNOS } from "../shared/config";
 import { create, IQuery } from "../shared/cosmos"
 
 
@@ -12,7 +13,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         formaIngresso
     }
 
-    const insert = await create("alunos", aluno)
+    const insert = await create(TABELA_ALUNOS, aluno)
 
     context.res = {
         body: {
