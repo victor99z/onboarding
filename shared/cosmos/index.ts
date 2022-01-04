@@ -46,6 +46,7 @@ const findById = async (nomeTabela: string, id: string): Promise<ItemResponse<an
 const deleteAllItems = async (nomeTabela: string): Promise<any> => {
     const container = await client.database(DB_NAME).container(nomeTabela)
     await container.delete()
+    await client.database(DB_NAME).containers.create({ id: nomeTabela })
 }
 
 const findByName = async (nomeTabela: string, nome: string): Promise<any> => {

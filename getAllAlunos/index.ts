@@ -7,7 +7,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const response = await findAll(TABELA_ALUNOS)
 
     context.res = {
-        body: response
+        body: response,
     };
 
 };
