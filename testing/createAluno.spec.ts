@@ -7,9 +7,6 @@ afterAll(async () => {
     await deleteAllItems(TABELA_ALUNOS)
 })
 
-beforeAll(async () => {
-    // init db
-})
 
 describe("createAluno -> index.ts", () => {
 

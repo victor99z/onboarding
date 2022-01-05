@@ -6,6 +6,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const { idProfessor, cargaHoraria } = req.body
 
     if (idProfessor && cargaHoraria) {
+
         try {
             const getProfessor = await findById(TABELA_PROFESSORES, idProfessor)
 
@@ -21,14 +22,15 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
                     id: idCriacao
                 }
             }
-        } catch (err) {
+            return
+        } catch (error) {
             context.res = {
                 body: {
                     msg: "Professor não encontrado"
                 }
             }
+            return
         }
-        return
     }
     context.res = {
         body: {

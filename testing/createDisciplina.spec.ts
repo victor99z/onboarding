@@ -1,14 +1,19 @@
 
-import { TABELA_PROFESSORES } from "../shared/config"
-import { create } from "../shared/cosmos"
+import { TABELA_DISCIPLINAS, TABELA_PROFESSORES } from "../shared/config"
+import { create, deleteAllItems } from "../shared/cosmos"
 import httpFunction from "../createDisciplina"
 import context from "./defaultContext"
+
+afterAll(async () => {
+    await deleteAllItems(TABELA_DISCIPLINAS)
+})
+
+beforeAll
 
 describe("createDisciplina -> index.ts", () => {
     jest.setTimeout(10000)
 
-    // TODO: inserir um professor no bd e fazer o teste depois
-    test("cria uma disciplina", async () => {
+    test("cria uma disciplina com professor ficticio", async () => {
 
         const professor = {
             nome: "João da silva",
@@ -27,6 +32,37 @@ describe("createDisciplina -> index.ts", () => {
         await httpFunction(context, req);
 
         expect(context.res.body.id).not.toBeNull()
+
+    })
+
+    test("Erro de professor não encontrado", async () => {
+
+        const req = {
+            body: {
+                idProfessor: "dada",
+                cargaHoraria: 36
+            }
+        }
+
+        await httpFunction(context, req);
+
+        expect(context.res.body.msg).toBe("Professor não encontrado")
+
+    })
+
+
+    test("erro de campo nao preenchido", async () => {
+
+        const req = {
+            body: {
+                idProfessor: null,
+                cargaHoraria: 36
+            }
+        }
+
+        await httpFunction(context, req);
+
+        expect(context.res.body.msg).toBe("Campos não preenchidos")
 
     })
 

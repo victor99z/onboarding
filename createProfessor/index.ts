@@ -3,23 +3,29 @@ import { create, IQuery } from "../shared/cosmos"
 import { TABELA_PROFESSORES } from "../shared/config"
 
 
-
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     const { nome, titulacao } = req.body;
 
-    const professor: Professor = {
-        nome,
-        titulacao
+    if (nome && titulacao) {
+        const professor: Professor = {
+            nome,
+            titulacao
+        }
+
+        const idCriacao = await create(TABELA_PROFESSORES, professor)
+
+        context.res = {
+            body: {
+                idCriacao
+            }
+        };
+        return
     }
-
-    const idCriacao = await create(TABELA_PROFESSORES, professor)
-
     context.res = {
         body: {
-            idCriacao
+            msg: "Campos não preenchidos"
         }
     };
-
 };
 
 export default httpTrigger;
