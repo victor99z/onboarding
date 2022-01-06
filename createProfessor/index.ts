@@ -1,6 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 import { create, IQuery } from "../shared/cosmos"
 import { TABELA_PROFESSORES } from "../shared/config"
+import { Professor } from "../@types/types";
 
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {

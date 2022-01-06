@@ -1,4 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import { Disciplina } from "../@types/types";
 import { TABELA_DISCIPLINAS, TABELA_PROFESSORES } from "../shared/config";
 import { create, findById } from "../shared/cosmos";
 
@@ -7,9 +8,9 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
 
     if (idProfessor && cargaHoraria) {
 
-        try {
-            const getProfessor = await findById(TABELA_PROFESSORES, idProfessor)
+        const getProfessor = await findById(TABELA_PROFESSORES, idProfessor)
 
+        if (getProfessor.resource) {
             const disciplina: Disciplina = {
                 professorId: getProfessor.resource.id,
                 cargaHoraria
@@ -23,14 +24,13 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
                 }
             }
             return
-        } catch (error) {
-            context.res = {
-                body: {
-                    msg: "Professor não encontrado"
-                }
-            }
-            return
         }
+        context.res = {
+            body: {
+                msg: "Professor não encontrado"
+            }
+        }
+        return
     }
     context.res = {
         body: {

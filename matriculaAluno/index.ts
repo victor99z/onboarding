@@ -1,38 +1,48 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
-import { create } from "domain";
 import { TABELA_ALUNOS, TABELA_TURMAS } from "../shared/config";
 import { findById, update } from "../shared/cosmos";
 
-// TODO: finalizar validacoes
-
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    const { idTurma, idAluno, body } = req.body
+    const { idTurma, idAluno } = req.body
 
-    if (idTurma && idAluno && body) {
-        try {
+    if (idTurma && idAluno) {
 
+        const turma = await findById(TABELA_TURMAS, idTurma)
+        const aluno = await findById(TABELA_ALUNOS, idAluno)
 
-            const turma = await findById(TABELA_TURMAS, idTurma)
-            await findById(TABELA_ALUNOS, idAluno)
+        if (turma.resource && aluno.resource) {
+            if (!turma.resource.alunos.includes(aluno.resource.id)) {
+                const body = {
+                    alunos: turma.resource.alunos.concat(idAluno),
+                    disciplinas: turma.resource.disciplinas,
+                    ano: turma.resource.ano,
+                    periodoLetivo: turma.resource.periodoLetivo,
+                    numVagas: turma.resource.numVagas
+                }
 
+                const idUpdate = await update(TABELA_TURMAS, idTurma, body)
 
-
-            const idUpdate = await update(TABELA_TURMAS, idTurma, body)
-
+                context.res = {
+                    body: {
+                        id: idUpdate
+                    }
+                };
+                return
+            }
             context.res = {
                 body: {
-                    id: idUpdate
+                    msg: "Aluno já matriculado"
                 }
             };
             return
-        } catch (err) {
-            context.res = {
-                body: {
-                    msg: "Turma ou Aluno inválidos"
-                }
-            };
-            return
+
         }
+        context.res = {
+            body: {
+                msg: "Turma ou Aluno inválidos"
+            }
+        };
+        return
     }
     context.res = {
         body: {

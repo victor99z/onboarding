@@ -1,3 +1,5 @@
+import { Aluno } from "../@types/types"
+
 export const validaAluno = (aluno: Aluno): Array<string> => {
     let violations = []
     if (!(aluno.idade && aluno.formaIngresso && aluno.matricula && aluno.nome)) {

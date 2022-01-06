@@ -1,6 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import { Aluno } from "../@types/types";
 import { TABELA_ALUNOS } from "../shared/config";
-import { create, IQuery } from "../shared/cosmos"
+import { create } from "../shared/cosmos"
 import { validaAluno } from "./valida";
 
 
@@ -27,6 +28,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     }
 
     context.res = {
+        status: 201,
         body: {
             msg: msgValida
         }

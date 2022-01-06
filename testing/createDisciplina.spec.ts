@@ -8,8 +8,6 @@ afterAll(async () => {
     await deleteAllItems(TABELA_DISCIPLINAS)
 })
 
-beforeAll
-
 describe("createDisciplina -> index.ts", () => {
     jest.setTimeout(10000)
 
