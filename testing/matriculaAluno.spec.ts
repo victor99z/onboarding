@@ -13,6 +13,7 @@ afterAll(async () => {
     await deleteAllItems(TABELA_ALUNOS)
     await deleteAllItems(TABELA_TURMAS)
     await deleteAllItems(TABELA_DISCIPLINAS)
+    await deleteAllItems(TABELA_PROFESSORES)
 })
 
 beforeAll(async () => {
@@ -28,22 +29,18 @@ beforeAll(async () => {
         matricula: "16498ad",
         formaIngresso: "SISU"
     })
-
     prof1 = await create(TABELA_PROFESSORES, {
         nome: "TESTE",
         titulacao: "PHD"
     })
-
     prof2 = await create(TABELA_PROFESSORES, {
         nome: "TESTE2",
         titulacao: "MSc"
     })
-
     disp1 = await create(TABELA_DISCIPLINAS, {
         idProfessor: prof1,
         cargaHoraria: 72
     })
-
     disp2 = await create(TABELA_DISCIPLINAS, {
         idProfessor: prof2,
         cargaHoraria: 72

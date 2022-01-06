@@ -42,7 +42,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-
+/coverage/*
+/coverage
 # Intellij
 
 .idea
