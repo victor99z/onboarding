@@ -11,8 +11,9 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         const aluno = await findById(TABELA_ALUNOS, idAluno)
 
         if (turma.resource && aluno.resource) {
-            if (!turma.resource.alunos.includes(aluno.resource.id)) {
+            if (!turma.resource.alunos.includes(idAluno)) {
                 const body = {
+                    id: idTurma,
                     alunos: turma.resource.alunos.concat(idAluno),
                     disciplinas: turma.resource.disciplinas,
                     ano: turma.resource.ano,
@@ -35,7 +36,6 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
                 }
             };
             return
-
         }
         context.res = {
             body: {

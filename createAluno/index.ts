@@ -20,6 +20,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     if (msgValida.length == 0) {
         const idCriacao = await create(TABELA_ALUNOS, aluno)
         context.res = {
+            status: 201,
             body: {
                 id: idCriacao
             }
@@ -28,7 +29,6 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     }
 
     context.res = {
-        status: 201,
         body: {
             msg: msgValida
         }

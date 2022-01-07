@@ -3,9 +3,11 @@ import { TABELA_DISCIPLINAS, TABELA_PROFESSORES } from "../shared/config"
 import { create, deleteAllItems } from "../shared/cosmos"
 import httpFunction from "../createDisciplina"
 import context from "./defaultContext"
+import { TITULACAO } from "../@types/types"
 
 afterAll(async () => {
     await deleteAllItems(TABELA_DISCIPLINAS)
+    await deleteAllItems(TABELA_PROFESSORES)
 })
 
 describe("createDisciplina -> index.ts", () => {
@@ -15,7 +17,7 @@ describe("createDisciplina -> index.ts", () => {
 
         const professor = {
             nome: "João da silva",
-            titulacao: "Mestre"
+            titulacao: TITULACAO.MESTRE
         }
 
         const profIdTeste = await create(TABELA_PROFESSORES, professor)

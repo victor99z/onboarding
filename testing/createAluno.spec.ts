@@ -1,3 +1,4 @@
+import { FORMA_INGRESSO } from '../@types/types'
 import httpFunction from '../createAluno'
 import { TABELA_ALUNOS } from '../shared/config'
 import { deleteAllItems } from '../shared/cosmos'
@@ -19,7 +20,7 @@ describe("createAluno -> index.ts", () => {
                 nome: "teste",
                 idade: "22",
                 matricula: "ABC5547E",
-                formaIngresso: "VESTIBULAR"
+                formaIngresso: FORMA_INGRESSO.ENADE
             }
         }
 
@@ -35,7 +36,7 @@ describe("createAluno -> index.ts", () => {
                 nome: "teste",
                 idade: 22,
                 matricula: "ABC5547E",
-                formaIngresso: "VESTIBULAR"
+                formaIngresso: FORMA_INGRESSO.VESTIBULAR
             }
         }
 
@@ -51,7 +52,7 @@ describe("createAluno -> index.ts", () => {
                 nome: null,
                 idade: 22,
                 matricula: "ABC5547E",
-                formaIngresso: "VESTIBULAR"
+                formaIngresso: FORMA_INGRESSO.SISU
             }
         }
 
@@ -67,7 +68,7 @@ describe("createAluno -> index.ts", () => {
                 nome: null,
                 idade: "22",
                 matricula: "ABC5547E",
-                formaIngresso: "VESTIBULAR"
+                formaIngresso: FORMA_INGRESSO.VESTIBULAR
             }
         }
 
@@ -76,6 +77,23 @@ describe("createAluno -> index.ts", () => {
         expect(context.res.body.msg).toContain("Campos não preenchidos")
         expect(context.res.body.msg).toContain("Idade precisa ser um numero")
     })
+
+    test("Deve gerar um erro por falta de input e idade sem ser numero", async () => {
+
+        const req = {
+            body: {
+                nome: "pica",
+                idade: 22,
+                matricula: "ABC5547E",
+                formaIngresso: "BAIANO"
+            }
+        }
+
+        await httpFunction(context, req)
+
+        expect(context.res.body.msg).toContain("Campo formaIngresso com tipo incorreto")
+    })
+
 })
 
 

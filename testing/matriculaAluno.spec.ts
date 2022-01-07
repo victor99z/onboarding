@@ -1,17 +1,15 @@
 import context from "./defaultContext"
 import httpFunction from "../matriculaAluno"
 import { deleteAllItems } from "../shared/cosmos"
-import { Turma } from "../@types/types"
+import { FORMA_INGRESSO, PERIODO, TITULACAO } from "../@types/types"
 import { TABELA_ALUNOS, TABELA_DISCIPLINAS, TABELA_PROFESSORES, TABELA_TURMAS } from "../shared/config"
 import { create } from "../shared/cosmos"
-
-// TODO: finalizar
 
 let aluno1, aluno2, disp1, disp2, prof1, prof2
 
 afterAll(async () => {
-    await deleteAllItems(TABELA_ALUNOS)
     await deleteAllItems(TABELA_TURMAS)
+    await deleteAllItems(TABELA_ALUNOS)
     await deleteAllItems(TABELA_DISCIPLINAS)
     await deleteAllItems(TABELA_PROFESSORES)
 })
@@ -21,21 +19,21 @@ beforeAll(async () => {
         nome: "Joshua",
         idade: 19,
         matricula: "16498ad",
-        formaIngresso: "Vestibular"
+        formaIngresso: FORMA_INGRESSO.SISU
     })
     aluno2 = await create(TABELA_ALUNOS, {
         nome: "ROberson",
         idade: 23,
         matricula: "16498ad",
-        formaIngresso: "SISU"
+        formaIngresso: FORMA_INGRESSO.VESTIBULAR
     })
     prof1 = await create(TABELA_PROFESSORES, {
         nome: "TESTE",
-        titulacao: "PHD"
+        titulacao: TITULACAO.GRADUADO
     })
     prof2 = await create(TABELA_PROFESSORES, {
         nome: "TESTE2",
-        titulacao: "MSc"
+        titulacao: TITULACAO.PHD
     })
     disp1 = await create(TABELA_DISCIPLINAS, {
         idProfessor: prof1,
@@ -45,22 +43,31 @@ beforeAll(async () => {
         idProfessor: prof2,
         cargaHoraria: 72
     })
+
 })
 
 describe("matriculaAluno -> index.ts", () => {
     jest.setTimeout(10000)
 
-    const turma = {
-        alunos: [aluno1, aluno2],
-        disciplinas: [disp1, disp2],
-        ano: "2022",
-        numVagas: 60,
-        periodoLetivo: "Manhã"
-    }
 
     test("deve matricular um aluno ", async () => {
 
-        const req = { body: turma }
+        const turma = {
+            alunos: [aluno1],
+            disciplinas: [disp1, disp2],
+            ano: "2022",
+            numVagas: 60,
+            periodoLetivo: PERIODO.MANHA
+        }
+
+        const idTurma = await create(TABELA_TURMAS, turma)
+
+        const req = {
+            body: {
+                idTurma,
+                idAluno: aluno2
+            }
+        }
 
         await httpFunction(context, req)
 
@@ -68,15 +75,80 @@ describe("matriculaAluno -> index.ts", () => {
     })
 
     test("deve gerar erro de aluno já matricula na turma ", async () => {
-        expect(true).toBe(true)
+
+        aluno1 = await create(TABELA_ALUNOS, {
+            nome: "Joshua",
+            idade: 19,
+            matricula: "16498ad",
+            formaIngresso: FORMA_INGRESSO.SISU
+        })
+
+        const turma = {
+            alunos: [aluno1],
+            disciplinas: [disp1, disp2],
+            ano: "2022",
+            numVagas: 60,
+            periodoLetivo: PERIODO.MANHA
+        }
+
+        const idTurma = await create(TABELA_TURMAS, turma)
+
+        const req = {
+            body: {
+                idTurma,
+                idAluno: aluno1
+            }
+        }
+
+        await httpFunction(context, req)
+
+        expect(context.res.body.msg).toBe("Aluno já matriculado")
     })
 
     test("deve gerar erro de aluno ou turma inexistente ", async () => {
-        expect(true).toBe(true)
+        const turma = {
+            alunos: [aluno1],
+            disciplinas: [disp1, disp2],
+            ano: "2022",
+            numVagas: 60,
+            periodoLetivo: PERIODO.MANHA
+        }
+
+        const idTurma = await create(TABELA_TURMAS, turma)
+
+        const req = {
+            body: {
+                idTurma,
+                idAluno: "aasdad"
+            }
+        }
+
+        await httpFunction(context, req)
+
+        expect(context.res.body.msg).toBe("Turma ou Aluno inválidos")
     })
 
     test("deve gerar erro de input ", async () => {
-        expect(true).toBe(true)
+        const turma = {
+            alunos: [aluno1],
+            disciplinas: [disp1, disp2],
+            ano: "2022",
+            numVagas: 60,
+            periodoLetivo: PERIODO.MANHA
+        }
+
+        const idTurma = await create(TABELA_TURMAS, turma)
+
+        const req = {
+            body: {
+                idTurma: null,
+                idAluno: "aasdad"
+            }
+        }
+
+        await httpFunction(context, req)
+
+        expect(context.res.body.msg).toBe("Campos não preenchidos")
     })
 
 })

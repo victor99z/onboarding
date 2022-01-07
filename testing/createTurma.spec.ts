@@ -1,7 +1,7 @@
 import context from "./defaultContext"
 import httpFunction from "../createTurma"
 import { TABELA_ALUNOS, TABELA_DISCIPLINAS, TABELA_PROFESSORES, TABELA_TURMAS } from "../shared/config"
-import { Aluno, Disciplina, Professor } from "../@types/types"
+import { Aluno, Disciplina, FORMA_INGRESSO, PERIODO, Professor, TITULACAO } from "../@types/types"
 import { create, deleteAllItems } from "../shared/cosmos"
 
 
@@ -20,14 +20,14 @@ describe("createTurma -> index.ts", () => {
 
         const aluno: Aluno = {
             nome: "JK",
-            formaIngresso: "VESTIBULAR",
+            formaIngresso: FORMA_INGRESSO.VESTIBULAR,
             idade: 30,
             matricula: "ABC113"
         }
 
         const professor: Professor = {
             nome: "teste",
-            titulacao: "Mestre"
+            titulacao: TITULACAO.GRADUADO
         }
 
         const professorId = await create(TABELA_PROFESSORES, professor)
@@ -45,7 +45,7 @@ describe("createTurma -> index.ts", () => {
             disciplinas: [idDisciplina],
             ano: 2022,
             numVagas: 30,
-            periodoLetivo: "Matutino"
+            periodoLetivo: PERIODO.NOITE
         }
 
         const req = {
@@ -73,7 +73,7 @@ describe("createTurma -> index.ts", () => {
                 "ce64f64a-4841-44c2-b024-fceb685d2c77"
             ],
             ano: 2022,
-            periodoLetivo: "Manhã",
+            periodoLetivo: PERIODO.MANHA,
             numVagas: 30
 
         }
@@ -93,7 +93,7 @@ describe("createTurma -> index.ts", () => {
             disciplinas: null,
             ano: 2022,
             numVagas: 30,
-            periodoLetivo: "Matutino"
+            periodoLetivo: PERIODO.TARDE
         }
 
         const req = {

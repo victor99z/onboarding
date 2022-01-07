@@ -1,5 +1,12 @@
 import context from "./defaultContext"
 import httpFunction from "../createProfessor"
+import { deleteAllItems } from "../shared/cosmos"
+import { TABELA_PROFESSORES } from "../shared/config"
+import { TITULACAO } from "../@types/types"
+
+afterAll(async () => {
+    await deleteAllItems(TABELA_PROFESSORES)
+})
 
 describe("createProfessor -> index.ts", () => {
     jest.setTimeout(10000)
@@ -8,7 +15,7 @@ describe("createProfessor -> index.ts", () => {
         const req = {
             body: {
                 nome: "Java",
-                titulacao: "Doutor"
+                titulacao: TITULACAO.PHD
             }
         }
 
@@ -22,7 +29,7 @@ describe("createProfessor -> index.ts", () => {
         const req = {
             body: {
                 nome: null,
-                titulacao: "Doutor"
+                titulacao: TITULACAO.PHD
             }
         }
 
