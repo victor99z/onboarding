@@ -1,9 +1,11 @@
 export interface Professor {
+    id?: string,
     nome: string,
     titulacao: TITULACAO
 }
 
 export interface Aluno {
+    id?: string,
     nome: string,
     idade: number,
     matricula: string,
@@ -11,11 +13,13 @@ export interface Aluno {
 }
 
 export interface Disciplina {
+    id?: string,
     professorId: string,
     cargaHoraria: number
 }
 
 export interface Turma {
+    id?: string,
     alunos: [Aluno],
     disciplinas: [Disciplina],
     ano: string,
@@ -24,6 +28,7 @@ export interface Turma {
 }
 
 export interface MatriculaAluno {
+    id?: string,
     idAluno: string,
     idTurma: string
 }

@@ -19,8 +19,8 @@ const getAluno = async (alunos: [any]): Promise<boolean> => {
 
 const getDisciplina = async (disciplinas: [any]): Promise<boolean> => {
     try {
-        for (const aluno of disciplinas) {
-            const response = await findById(TABELA_DISCIPLINAS, aluno)
+        for (const disciplina of disciplinas) {
+            const response = await findById(TABELA_DISCIPLINAS, disciplina)
             if (!response.resource) {
                 return false
             }
