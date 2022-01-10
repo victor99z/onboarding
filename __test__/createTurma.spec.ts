@@ -5,45 +5,47 @@ import { Aluno, Disciplina, FORMA_INGRESSO, PERIODO, Professor, TITULACAO } from
 import { create, deleteAllItems } from "../shared/cosmos"
 import * as faker from "faker-br"
 
-let aluno: Aluno, disciplina: Disciplina, professor: Professor
 
-afterAll(async () => {
-    await deleteAllItems(TABELA_ALUNOS)
-    await deleteAllItems(TABELA_DISCIPLINAS)
-    await deleteAllItems(TABELA_TURMAS)
-    await deleteAllItems(TABELA_PROFESSORES)
-})
-
-beforeAll(async () => {
-    aluno = {
-        nome: faker.name.firstName(),
-        formaIngresso: FORMA_INGRESSO.VESTIBULAR,
-        idade: faker.random.number(),
-        matricula: faker.random.alphaNumeric()
-    }
-
-    professor = {
-        nome: faker.name.firstName(),
-        titulacao: TITULACAO.GRADUADO
-    }
-
-    professor.id = await create(TABELA_PROFESSORES, professor)
-
-    disciplina = {
-        cargaHoraria: faker.random.number(),
-        professorId: professor.id
-    }
-
-    aluno.id = await create(TABELA_ALUNOS, aluno)
-    disciplina.id = await create(TABELA_DISCIPLINAS, disciplina)
-
-})
 
 describe("createTurma -> index.ts", () => {
     jest.setTimeout(10000)
 
-    test("Cria uma turma ", async () => {
+    let aluno: Aluno, disciplina: Disciplina, professor: Professor
 
+    afterAll(async () => {
+        await deleteAllItems(TABELA_ALUNOS)
+        await deleteAllItems(TABELA_DISCIPLINAS)
+        await deleteAllItems(TABELA_TURMAS)
+        await deleteAllItems(TABELA_PROFESSORES)
+    })
+
+    beforeAll(async () => {
+        aluno = {
+            nome: faker.name.firstName(),
+            formaIngresso: FORMA_INGRESSO.VESTIBULAR,
+            idade: faker.random.number(),
+            matricula: faker.random.alphaNumeric()
+        }
+
+        professor = {
+            nome: faker.name.firstName(),
+            titulacao: TITULACAO.GRADUADO
+        }
+
+        professor.id = await create(TABELA_PROFESSORES, professor)
+
+        disciplina = {
+            cargaHoraria: faker.random.number(),
+            professorId: professor.id
+        }
+
+        aluno.id = await create(TABELA_ALUNOS, aluno)
+        disciplina.id = await create(TABELA_DISCIPLINAS, disciplina)
+
+    })
+
+
+    test("Cria uma turma ", async () => {
 
         const turma = {
             alunos: [aluno.id],

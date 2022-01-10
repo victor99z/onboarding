@@ -5,14 +5,15 @@ import { deleteAllItems } from '../shared/cosmos'
 import context from './defaultContext'
 import * as faker from "faker-br"
 
-afterAll(async () => {
-    await deleteAllItems(TABELA_ALUNOS)
-})
-
 
 describe("createAluno -> index.ts", () => {
 
     jest.setTimeout(10000)
+
+    afterAll(async () => {
+        await deleteAllItems(TABELA_ALUNOS)
+    })
+
 
     test("Deve gerar um erro ao criar o aluno", async () => {
 

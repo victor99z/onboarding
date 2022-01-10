@@ -6,13 +6,14 @@ import context from "./defaultContext"
 import { TITULACAO } from "../@types/types"
 import * as faker from "faker-br"
 
-afterAll(async () => {
-    await deleteAllItems(TABELA_DISCIPLINAS)
-    await deleteAllItems(TABELA_PROFESSORES)
-})
 
 describe("createDisciplina -> index.ts", () => {
     jest.setTimeout(10000)
+
+    afterAll(async () => {
+        await deleteAllItems(TABELA_DISCIPLINAS)
+        await deleteAllItems(TABELA_PROFESSORES)
+    })
 
     test("cria uma disciplina com professor ficticio", async () => {
 

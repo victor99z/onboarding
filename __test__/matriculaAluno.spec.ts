@@ -6,50 +6,53 @@ import { TABELA_ALUNOS, TABELA_DISCIPLINAS, TABELA_PROFESSORES, TABELA_TURMAS } 
 import { create } from "../shared/cosmos"
 import * as faker from "faker-br"
 
-let aluno1, aluno2, disp1, disp2, prof1, prof2
-
-afterAll(async () => {
-    await deleteAllItems(TABELA_TURMAS)
-    await deleteAllItems(TABELA_ALUNOS)
-    await deleteAllItems(TABELA_DISCIPLINAS)
-    await deleteAllItems(TABELA_PROFESSORES)
-})
-
-beforeAll(async () => {
-
-    aluno1 = await create(TABELA_ALUNOS, {
-        nome: faker.name.firstName(),
-        idade: faker.random.number(),
-        matricula: faker.random.hexaDecimal(),
-        formaIngresso: FORMA_INGRESSO.SISU
-    })
-    aluno2 = await create(TABELA_ALUNOS, {
-        nome: faker.name.firstName(),
-        idade: faker.random.number(),
-        matricula: faker.random.number(),
-        formaIngresso: FORMA_INGRESSO.VESTIBULAR
-    })
-    prof1 = await create(TABELA_PROFESSORES, {
-        nome: faker.name.firstName(),
-        titulacao: TITULACAO.GRADUADO
-    })
-    prof2 = await create(TABELA_PROFESSORES, {
-        nome: faker.name.firstName(),
-        titulacao: TITULACAO.PHD
-    })
-    disp1 = await create(TABELA_DISCIPLINAS, {
-        idProfessor: prof1,
-        cargaHoraria: faker.random.number()
-    })
-    disp2 = await create(TABELA_DISCIPLINAS, {
-        idProfessor: prof2,
-        cargaHoraria: faker.random.number()
-    })
-
-})
 
 describe("matriculaAluno -> index.ts", () => {
     jest.setTimeout(10000)
+
+    let aluno1, aluno2, disp1, disp2, prof1, prof2
+
+    afterAll(async () => {
+        await deleteAllItems(TABELA_TURMAS)
+        await deleteAllItems(TABELA_ALUNOS)
+        await deleteAllItems(TABELA_DISCIPLINAS)
+        await deleteAllItems(TABELA_PROFESSORES)
+    })
+
+    beforeAll(async () => {
+
+        jest.resetAllMocks()
+
+        aluno1 = await create(TABELA_ALUNOS, {
+            nome: faker.name.firstName(),
+            idade: faker.random.number(),
+            matricula: faker.random.hexaDecimal(),
+            formaIngresso: FORMA_INGRESSO.SISU
+        })
+        aluno2 = await create(TABELA_ALUNOS, {
+            nome: faker.name.firstName(),
+            idade: faker.random.number(),
+            matricula: faker.random.number(),
+            formaIngresso: FORMA_INGRESSO.VESTIBULAR
+        })
+        prof1 = await create(TABELA_PROFESSORES, {
+            nome: faker.name.firstName(),
+            titulacao: TITULACAO.GRADUADO
+        })
+        prof2 = await create(TABELA_PROFESSORES, {
+            nome: faker.name.firstName(),
+            titulacao: TITULACAO.PHD
+        })
+        disp1 = await create(TABELA_DISCIPLINAS, {
+            idProfessor: prof1,
+            cargaHoraria: faker.random.number()
+        })
+        disp2 = await create(TABELA_DISCIPLINAS, {
+            idProfessor: prof2,
+            cargaHoraria: faker.random.number()
+        })
+
+    })
 
     /**
      * FIXME: Erro no teste ao executar o suite completo porem o test sozinho funciona

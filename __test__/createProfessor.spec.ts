@@ -5,12 +5,14 @@ import { TABELA_PROFESSORES } from "../shared/config"
 import { TITULACAO } from "../@types/types"
 import * as faker from "faker-br"
 
-afterAll(async () => {
-    await deleteAllItems(TABELA_PROFESSORES)
-})
+
 
 describe("createProfessor -> index.ts", () => {
     jest.setTimeout(10000)
+
+    afterAll(async () => {
+        await deleteAllItems(TABELA_PROFESSORES)
+    })
 
     test("Deve criar um professor", async () => {
         const req = {
@@ -58,7 +60,7 @@ describe("createProfessor -> index.ts", () => {
         const req = {
             body: {
                 nome: faker.name.firstName(),
-                titulacao: "RAPAZZ"
+                titulacao: faker.random.word()
             }
         }
 
