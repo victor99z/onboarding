@@ -3,6 +3,7 @@ import httpFunction from "../createProfessor"
 import { deleteAllItems } from "../shared/cosmos"
 import { TABELA_PROFESSORES } from "../shared/config"
 import { TITULACAO } from "../@types/types"
+import * as faker from "faker-br"
 
 afterAll(async () => {
     await deleteAllItems(TABELA_PROFESSORES)
@@ -14,7 +15,7 @@ describe("createProfessor -> index.ts", () => {
     test("Deve criar um professor", async () => {
         const req = {
             body: {
-                nome: "Java",
+                nome: faker.name.firstName(),
                 titulacao: TITULACAO.PHD
             }
         }
@@ -50,6 +51,20 @@ describe("createProfessor -> index.ts", () => {
         await httpFunction(context, req)
 
         expect(context.res.body.msg).toBe("Campos não preenchidos")
+
+    })
+
+    test("Deve gerar um erro por falta de input", async () => {
+        const req = {
+            body: {
+                nome: faker.name.firstName(),
+                titulacao: "RAPAZZ"
+            }
+        }
+
+        await httpFunction(context, req)
+
+        expect(context.res.body.msg).toBe("Titulação inválida")
 
     })
 

@@ -64,9 +64,9 @@ export const findByName = async (nomeTabela: string, nome: string): Promise<any>
         }]
     }
 
-    const { resources: result } = await client.database(DB_NAME).container(nomeTabela).items.query(query).fetchAll()
+    const { resources } = await client.database(DB_NAME).container(nomeTabela).items.query(query).fetchAll()
 
-    return result
+    return resources
 }
 
 export const update = async (nomeTabela: string, idDocumento: string, content: any): Promise<any> => {

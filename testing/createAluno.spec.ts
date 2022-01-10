@@ -3,6 +3,7 @@ import httpFunction from '../createAluno'
 import { TABELA_ALUNOS } from '../shared/config'
 import { deleteAllItems } from '../shared/cosmos'
 import context from './defaultContext'
+import * as faker from "faker-br"
 
 afterAll(async () => {
     await deleteAllItems(TABELA_ALUNOS)
@@ -17,9 +18,9 @@ describe("createAluno -> index.ts", () => {
 
         const req = {
             body: {
-                nome: "teste",
-                idade: "22",
-                matricula: "ABC5547E",
+                nome: faker.name.firstName(),
+                idade: faker.random.word(),
+                matricula: faker.random.alphaNumeric(),
                 formaIngresso: FORMA_INGRESSO.ENADE
             }
         }
@@ -33,9 +34,9 @@ describe("createAluno -> index.ts", () => {
 
         const req = {
             body: {
-                nome: "teste",
-                idade: 22,
-                matricula: "ABC5547E",
+                nome: faker.name.firstName(),
+                idade: faker.random.number(),
+                matricula: faker.random.alphaNumeric(),
                 formaIngresso: FORMA_INGRESSO.VESTIBULAR
             }
         }
@@ -50,8 +51,8 @@ describe("createAluno -> index.ts", () => {
         const req = {
             body: {
                 nome: null,
-                idade: 22,
-                matricula: "ABC5547E",
+                idade: faker.random.number(),
+                matricula: faker.random.alphaNumeric(),
                 formaIngresso: FORMA_INGRESSO.SISU
             }
         }
@@ -66,8 +67,8 @@ describe("createAluno -> index.ts", () => {
         const req = {
             body: {
                 nome: null,
-                idade: "22",
-                matricula: "ABC5547E",
+                idade: faker.random.word(),
+                matricula: faker.random.alphaNumeric(),
                 formaIngresso: FORMA_INGRESSO.VESTIBULAR
             }
         }
@@ -78,14 +79,14 @@ describe("createAluno -> index.ts", () => {
         expect(context.res.body.msg).toContain("Idade precisa ser um numero")
     })
 
-    test("Deve gerar um erro por falta de input e idade sem ser numero", async () => {
+    test("Deve gerar um erro por formato de Ingresso incorreto", async () => {
 
         const req = {
             body: {
-                nome: "pica",
-                idade: 22,
-                matricula: "ABC5547E",
-                formaIngresso: "BAIANO"
+                nome: faker.name.firstName(),
+                idade: faker.random.number(),
+                matricula: faker.random.alphaNumeric(),
+                formaIngresso: faker.random.word()
             }
         }
 

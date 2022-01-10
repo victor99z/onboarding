@@ -1,40 +1,12 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
-import { Turma } from "../@types/types";
-import { TABELA_ALUNOS, TABELA_DISCIPLINAS, TABELA_TURMAS } from "../shared/config";
-import { create, findById } from "../shared/cosmos";
-
-const getAluno = async (alunos: [any]): Promise<boolean> => {
-    try {
-        for (const aluno of alunos) {
-            const response = await findById(TABELA_ALUNOS, aluno)
-            if (!response.resource) {
-                return false
-            }
-        }
-        return true
-    } catch {
-        return false
-    }
-}
-
-const getDisciplina = async (disciplinas: [any]): Promise<boolean> => {
-    try {
-        for (const disciplina of disciplinas) {
-            const response = await findById(TABELA_DISCIPLINAS, disciplina)
-            if (!response.resource) {
-                return false
-            }
-        }
-        return true
-    } catch {
-        return false
-    }
-}
+import { TABELA_TURMAS } from "../shared/config";
+import { create } from "../shared/cosmos";
+import { validaTurma } from "./valida";
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     const { disciplinas, alunos, ano, numVagas, periodoLetivo } = req.body
 
-    const turma: Turma = {
+    const turma = {
         alunos,
         disciplinas,
         ano,
@@ -42,28 +14,21 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         periodoLetivo
     }
 
-    if (alunos && disciplinas && ano && numVagas && periodoLetivo) {
+    const msgValida = await validaTurma(turma)
 
-        if (await getDisciplina(disciplinas) && await getAluno(alunos)) {
-            const idCriacao = await create(TABELA_TURMAS, turma)
+    if (msgValida.length == 0) {
+        const idCriacao = await create(TABELA_TURMAS, turma)
 
-            context.res = {
-                body: {
-                    id: idCriacao
-                }
-            };
-            return
-        }
         context.res = {
             body: {
-                msg: "Erro: Aluno ou Disciplina não existe"
+                id: idCriacao
             }
         };
         return
     }
     context.res = {
         body: {
-            msg: "Campos não preenchidos"
+            msg: msgValida
         }
     };
 };

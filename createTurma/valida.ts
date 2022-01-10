@@ -1,25 +1,33 @@
-import { Turma } from "../@types/types"
+import { PERIODO, Turma } from "../@types/types"
 import { TABELA_ALUNOS, TABELA_DISCIPLINAS } from "../shared/config"
 import { findById } from "../shared/cosmos"
 
-const validaTurma = async (turma: Turma): Promise<any> => {
+export const validaTurma = async (turma): Promise<Array<string>> => {
     let violations = []
 
-    if (turma.alunos.length > 0 && turma.disciplinas.length > 0) {
-        for (const aluno of turma.alunos) {
-            const response = await findById(TABELA_ALUNOS, aluno.id)
-            if (!response.resource) {
-                violations.push("Aluno não encontrado")
+    if (turma.alunos && turma.disciplinas && turma.ano && turma.numVagas && turma.periodoLetivo) {
+        if (turma.alunos.length > 0 && turma.disciplinas.length > 0) {
+            for (const aluno of turma.alunos) {
+                const response = await findById(TABELA_ALUNOS, aluno)
+                if (!response.resource) {
+                    violations.push("Aluno não encontrado")
+                    break
+                }
+            }
+            for (const disciplina of turma.disciplinas) {
+                const response = await findById(TABELA_DISCIPLINAS, disciplina)
+                if (!response.resource) {
+                    violations.push("Disciplina não encontrada")
+                    break
+                }
             }
         }
-        for (const disciplina of turma.disciplinas) {
-            const response = await findById(TABELA_DISCIPLINAS, disciplina.id)
-            if (!response.resource) {
-                violations.push("Disciplina não encontrada")
-            }
+        if (!Object.values(PERIODO).includes(turma.periodoLetivo)) {
+            violations.push("Periodo letivo informado não existe")
         }
     } else {
-        violations.push("Formato de entrada inválido")
+        violations.push("Campos não preenchidos")
     }
+
     return violations
 }

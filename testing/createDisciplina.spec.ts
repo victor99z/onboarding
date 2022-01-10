@@ -4,6 +4,7 @@ import { create, deleteAllItems } from "../shared/cosmos"
 import httpFunction from "../createDisciplina"
 import context from "./defaultContext"
 import { TITULACAO } from "../@types/types"
+import * as faker from "faker-br"
 
 afterAll(async () => {
     await deleteAllItems(TABELA_DISCIPLINAS)
@@ -16,7 +17,7 @@ describe("createDisciplina -> index.ts", () => {
     test("cria uma disciplina com professor ficticio", async () => {
 
         const professor = {
-            nome: "João da silva",
+            nome: faker.name.firstName(),
             titulacao: TITULACAO.MESTRE
         }
 
@@ -25,7 +26,7 @@ describe("createDisciplina -> index.ts", () => {
         const req = {
             body: {
                 idProfessor: profIdTeste,
-                cargaHoraria: 36
+                cargaHoraria: faker.random.number()
             }
         }
 
@@ -39,8 +40,8 @@ describe("createDisciplina -> index.ts", () => {
 
         const req = {
             body: {
-                idProfessor: "dada",
-                cargaHoraria: 36
+                idProfessor: faker.random.word(),
+                cargaHoraria: faker.random.number()
             }
         }
 
@@ -56,7 +57,7 @@ describe("createDisciplina -> index.ts", () => {
         const req = {
             body: {
                 idProfessor: null,
-                cargaHoraria: 36
+                cargaHoraria: faker.random.number()
             }
         }
 
